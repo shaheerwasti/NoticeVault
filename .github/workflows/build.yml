@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,17 +22,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Download and install Gradle 8.6
+      - name: Build Debug APK
         run: |
           wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip -O /tmp/gradle.zip
           unzip -q /tmp/gradle.zip -d /tmp/
-          echo "/tmp/gradle-8.6/bin" >> $GITHUB_PATH
-
-      - name: Generate Gradle wrapper
-        run: gradle wrapper --gradle-version 8.6
-
-      - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+          /tmp/gradle-8.6/bin/gradle wrapper --gradle-version 8.6
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
