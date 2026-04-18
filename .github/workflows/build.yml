@@ -19,18 +19,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle 8.6
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.6'
+      - name: Download and install Gradle 8.6
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip -O /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp/
+          echo "/tmp/gradle-8.6/bin" >> $GITHUB_PATH
 
-      - name: Grant execute permission
-        run: chmod +x gradlew || true
+      - name: Generate Gradle wrapper
+        run: gradle wrapper --gradle-version 8.6
 
       - name: Build Debug APK
-        run: gradle :app:assembleDebug
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: NoticeVault-v2.0.0-debug
