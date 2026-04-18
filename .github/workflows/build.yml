@@ -22,14 +22,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        run: |
-          echo "sdk.dir=$ANDROID_HOME" > local.properties
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1
-
       - name: Build Debug APK
         run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
           wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip -O /tmp/gradle.zip
           unzip -q /tmp/gradle.zip -d /tmp/
           /tmp/gradle-8.6/bin/gradle wrapper --gradle-version 8.6
